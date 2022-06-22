@@ -7,10 +7,10 @@
           <el-input prefix-icon = "User" v-model = "form.username" clearable></el-input>
         </el-form-item>
         <el-form-item prop = "password">
-          <el-input prefix-icon = "Key" v-model = "form.password" show-password clearable></el-input>
+          <el-input prefix-icon = "lock" v-model = "form.password" show-password clearable></el-input>
         </el-form-item>
         <el-form-item prop = "confirm">
-          <el-input prefix-icon = "Key" v-model = "form.confirm" show-password clearable></el-input>
+          <el-input prefix-icon = "lock" v-model = "form.confirm" show-password clearable></el-input>
         </el-form-item>
         <el-form-item>
           <el-button style = "width: 50px" type = "primary" @click = "register">注册</el-button>
@@ -28,11 +28,7 @@ export default {
   name: "Register",
   data() {
     return {
-      form: {
-        username: "",
-        password: "",
-        confirm: ""
-      },
+      form: {},
       rules: {
         username: [
           {require: true, message: '请输入用户名', trigger: 'blur'},
@@ -52,14 +48,21 @@ export default {
   methods: {
     register() {
       this.$refs['form'].validate((valid) => {
-        if (this.form.confirm === this.form.password) {
-          request.post("/api/user/register", this.form).then(res => {
+        if (this.form.password !== this.form.confirm) {
+          this.$message({
+            type: "error",
+            message: '两次输入密码不一致！'
+          })
+          valid = false;
+        }
+        if (valid) {
+          request.post("/user/register", this.form).then(res => {
             if (res.code === '0') {
               this.$message({
                 type: "success",
                 message: "注册成功"
               })
-              this.$router.push("/")  //登录成功之后进行页面的，跳转到主页
+              this.$router.push("/login")  //登录成功之后进行页面的，跳转到主页
             } else {
               this.$message({
                 type: "error",

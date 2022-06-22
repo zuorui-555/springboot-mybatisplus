@@ -1,5 +1,5 @@
 <template>
-  <div style = "width: 100%; height: 100vh; overflow: hidden">
+  <div style = "width: 100%; height: 100vh; ">
     <div style = "width: 400px; margin: 100px auto">
       <div style = "color: dodgerblue; font-size: 30px; text-align: center; padding: 30px 0">欢迎登录</div>
       <el-form :rules = "rules" ref = "form" :model = "form" size = "default">
@@ -25,10 +25,7 @@ export default {
   name: "Login",
   data() {
     return {
-      form: {
-        username:"",
-        password:""
-      },
+      form: {},
       rules: {
         username: [
           {require: true, message: '请输入用户名', trigger: 'blur'},
@@ -45,12 +42,16 @@ export default {
     login() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          request.post("/api/user/login", this.form).then(res => {
+          request.post("/user/login", this.form).then(res => {
             if (res.code === '0') {
               this.$message({
                 type: "success",
                 message: "登录成功"
               })
+              debugger
+              sessionStorage.clear();//登录之前清空sessionStorage
+              sessionStorage.setItem("user", JSON.stringify(res.data))  //缓存用户信息
+              console.log(JSON.stringify((res.data)));
               this.$router.push("/")  //登录成功之后进行页面的，跳转到主页
             } else {
               this.$message({

@@ -5,11 +5,11 @@
     <div style = "width: 100px">
       <el-dropdown>
         <span class="el-dropdown-link" style = "line-height: 50px">
-        admin<el-icon class="el-icon--right"><arrow-down /></el-icon>
+        {{user.nickName}}<el-icon class="el-icon--right"><arrow-down /></el-icon>
         </span>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item>个人信息</el-dropdown-item>
+            <el-dropdown-item @click = "$router.push('/person')">个人信息</el-dropdown-item>
             <el-dropdown-item @click = "$router.push('/login')">退出系统</el-dropdown-item>
           </el-dropdown-menu>
         </template>
@@ -20,7 +20,15 @@
 
 <script>
 export default {
-  name: "Header"
+  name: "Header",
+  props:['user'],
+  data() {
+    return {
+
+    }
+  },
+  created() {
+  }
 }
 </script>
 

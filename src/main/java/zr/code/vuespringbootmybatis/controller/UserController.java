@@ -18,21 +18,25 @@ public class UserController {
     @Resource
     UserMapper userMapper;
 
-    @PostMapping
-    public Result<?> save(@RequestBody User user){
-        if(user.getPassword() == null){
-            user.setPassword("123456");
-        }
-        userMapper.insert(user);
-        return Result.success();
-    }
-
     @PostMapping("/login")
     public Result<?> login(@RequestBody User user){
         User res = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUsername, user.getUsername()).eq(User::getPassword, user.getPassword()));
         if(res == null){
             return Result.error("-1", "用户名或者密码错误");
         }
+        return Result.success(res);
+    }
+
+    @PostMapping("/register")
+    public Result<?> save(@RequestBody User user){
+        User res = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUsername, user.getUsername()));
+        if(res != null){
+            return Result.error("-1", "用户名重复");
+        }
+        if (user.getPassword() == null) {
+            user.setPassword("123456");
+        }
+        userMapper.insert(user);
         return Result.success();
     }
 
@@ -46,6 +50,11 @@ public class UserController {
     public Result<?> delete(@PathVariable Long id){
         userMapper.deleteById(id);
         return Result.success();
+    }
+
+    @GetMapping("/{id}")
+    public Result<?> getById(@PathVariable Long id) {
+        return Result.success(userMapper.selectById(id));
     }
 
     @GetMapping
