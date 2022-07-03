@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.web.bind.annotation.*;
 import zr.code.vuespringbootmybatis.common.Result;
+import zr.code.vuespringbootmybatis.entity.Book;
 import zr.code.vuespringbootmybatis.entity.User;
 import zr.code.vuespringbootmybatis.mapper.UserMapper;
 
@@ -28,7 +29,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public Result<?> save(@RequestBody User user){
+    public Result<?> register(@RequestBody User user){
         User res = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUsername, user.getUsername()));
         if(res != null){
             return Result.error("-1", "用户名重复");
@@ -38,6 +39,15 @@ public class UserController {
         }
         userMapper.insert(user);
         return Result.success();
+    }
+
+    @PostMapping
+    public Result<?> save(@RequestBody User user) {
+        if(user.getPassword() == null) {
+            user.setPassword("123456");
+        }
+        userMapper.insert(user);
+        return  Result.success();
     }
 
     @PutMapping

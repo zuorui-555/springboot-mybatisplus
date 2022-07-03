@@ -7,3 +7,7 @@ spring:
     url: jdbc:mysql://localhost:3306/vue
     username: root
     password: 1234
+
+  jackson:
+    date-format: yyyy-mm-dd
+    time-zone: UTC
